@@ -12,9 +12,8 @@ class Tree {
   }
 
   prettyPrint = (node, prefix = "", isLeft = true) => {
-    if (node === null) {
-      return;
-    }
+    if (node === null)return;
+    
     if (node.right !== null) {
       this.prettyPrint(
         node.right,
@@ -23,9 +22,9 @@ class Tree {
       );
     }
     console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
-    if (node.left !== null) {
-      this.prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
-    }
+   
+    if (node.left !== null)this.prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+    
   };
 
   buildTree(arr, start = 0, end) {
@@ -38,22 +37,20 @@ class Tree {
     let mid = Math.floor((start + end) / 2);
     let newNode = new Node(newArr[mid]);
     newNode.left = this.buildTree(newArr, start, mid - 1);
-
     newNode.right = this.buildTree(newArr, mid + 1, end);
     return newNode;
   }
 
   insert(val, node = this.root) {
     if (parseInt(val) < parseInt(node.data)) {
-      if (node.left === null) {
+      if (!node.left) {
         node.left = new Node(val);
         return;
       }
-
       this.insert(val, node.left);
     }
     if (parseInt(val) > parseInt(node.data)) {
-      if (node.right === null) {
+      if (!node.right) {
         node.right = new Node(val);
         return;
       }
@@ -62,16 +59,13 @@ class Tree {
   }
 
   findNextGreatest(node) {
-    if (node.left === null) {
-      return node;
-    }
+    if (!node.left) return node;
+    
     return this.findNextGreatest(node.left);
   }
 
   remove(val, node = this.root) {
-    // console.log(val, node, "Remove function");
     if (val == node.data) {
-      //Delete the root number;
       if (node.left != null && node.right != null) {
         let nextGreatest = this.findNextGreatest(node.right);
         this.remove(nextGreatest.data, node.right);
@@ -80,9 +74,7 @@ class Tree {
         let temp = nextGreatest;
         temp.left = leftSide;
         temp.right = rightSide;
-        node = temp;
         this.root = temp;
-        root = temp;
         return;
       }
     }
@@ -96,11 +88,11 @@ class Tree {
           node.left = temp;
           return;
         }
-        if (node.left.left === null) {
+        if (!node.left.left) {
           node.left = node.left.right;
           return;
         }
-        if (node.left.right == null) {
+        if (!node.left.right) {
           node.left = node.left.left;
           return;
         }
@@ -125,14 +117,15 @@ class Tree {
           node.right = node.right.left;
           return;
         }
-      } else {
+      }
+       else {
         if (node.left !== null) {
           if (val < node.left.data) this.remove(val, node.left);
 
           if (val > node.left.data && val < node.right.data)
             this.remove(val, node.left);
         }
-        if (node.right !== null) {
+        if (node.right !== null&&node.left!==null) {
           if (val < node.right.data && val > node.left.data)
             this.remove(val, node.right);
 
@@ -266,49 +259,45 @@ class Tree {
     if (rightHeight) return this.isBalanced(node.right);
   }
 
-  rebalance(){
-    let balancedArr=this.preorder();
-    this.root=this.buildTree(balancedArr);
+  rebalance() {
+    let balancedArr = this.preorder();
+    this.root = this.buildTree(balancedArr);
   }
 }
 
-function Driver(){
-    let size=10;
-    let array=Array.from({ length: size },()=>Math.floor(Math.random()*100));
-    console.log(array);
+function Driver() {
+  let size = 10;
+  let array = Array.from({ length: size }, () =>
+    Math.floor(Math.random() * 100)
+  );
+  console.log(array);
 
+  let bst = new Tree(array);
+  console.log(bst.isBalanced());
+  bst.prettyPrint(bst.root);
+  bst.preorder(bst.root, (item) => console.log("PreOrder: ", item));
+  console.log("______________________________________");
+  bst.inorder(bst.root, (item) => console.log("InOrder: ", item));
+  console.log("______________________________________");
+  bst.postorder(bst.root, (item) => console.log("PostOrder: ", item));
 
-    let bst = new Tree(array);
-    console.log(bst.isBalanced());
-    bst.prettyPrint(bst.root);
-    bst.preorder(bst.root,item=>console.log('PreOrder: ',item));
-    console.log('______________________________________')
-    bst.inorder(bst.root,item=>console.log('InOrder: ',item));
-    console.log('______________________________________')
-    bst.postorder(bst.root,item=>console.log('PostOrder: ',item));
-
-    bst.insert(100);
-    bst.insert(101);
-    bst.insert(102);
-    bst.insert(107);
-    console.log('______________________________________')
-    bst.prettyPrint(bst.root);
-    console.log( 'Is tree balanced',bst.isBalanced());
-    bst.rebalance();
-    console.log('______________________________________');
-    bst.prettyPrint(bst.root);
-    console.log( 'Is tree balanced',bst.isBalanced());
-    bst.levelOrder(item=>item.forEach(n=>console.log('Level: ',n)));
-    console.log('______________________________________');
-    bst.preorder(bst.root,item=>console.log('PreOrder: ',item));
-    console.log('______________________________________')
-    bst.inorder(bst.root,item=>console.log('InOrder: ',item));
-    console.log('______________________________________')
-    bst.postorder(bst.root,item=>console.log('PostOrder: ',item));
-
-
-
-
+  bst.insert(100);
+  bst.insert(101);
+  bst.insert(102);
+  bst.insert(107);
+  console.log("______________________________________");
+  bst.prettyPrint(bst.root);
+  console.log("Is tree balanced", bst.isBalanced());
+  bst.rebalance();
+  console.log("______________________________________");
+  bst.prettyPrint(bst.root);
+  console.log("Is tree balanced", bst.isBalanced());
+  bst.levelOrder((item) => item.forEach((n) => console.log("Level: ", n)));
+  console.log("______________________________________");
+  bst.preorder(bst.root, (item) => console.log("PreOrder: ", item));
+  console.log("______________________________________");
+  bst.inorder(bst.root, (item) => console.log("InOrder: ", item));
+  console.log("______________________________________");
+  bst.postorder(bst.root, (item) => console.log("PostOrder: ", item));
 }
 Driver();
-
